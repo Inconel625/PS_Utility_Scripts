@@ -1,7 +1,6 @@
 # This repo contains assorted Powershell scripts and functions, primarily focused on Windows system administration and cybersecurity
-
-# Useful Powershell Functions
-
+---
+# Useful Powershell Functions:
 ### Compute SHA1 hash of an input string
 ```powershell
 function Get-SHA1OfString {
