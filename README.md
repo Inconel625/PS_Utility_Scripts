@@ -1,4 +1,5 @@
-# This repo contains assorted Powershell scripts and functions, primarily focused on Windows system administration and cybersecurity
+# This repo contains assorted Powershell scripts, functions, and commands.
+## Primarily focused on Windows system administration and cybersecurity with a mix of various other areas
 ---
 # Useful Powershell Functions:
 ### Compute SHA1 hash of an input string
