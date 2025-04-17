@@ -1,0 +1,33 @@
+function New-FolderIfNotPresent {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$FolderPath
+    )
+    if (-not (Test-Path -Path $FolderPath -PathType Container)) {
+        Write-Host "Folder $FolderPath does not exist. Creating folder..." -ForegroundColor Yellow
+        New-Item -Path $FolderPath -ItemType Directory | Out-Null
+        Write-Host "Folder created successfully." -ForegroundColor blue
+    } else { Write-Host "Folder already exists." -ForegroundColor blue }
+}
+$Date = Get-Date -Format "yyyy-MM-dd_HH-mm"
+$Hostname = $env:computername
+# Set output location for CSV files, create if it does not exist
+$LogOutputRoot = "C:\Temp\Windows_Event_Log_Export"
+$LogOutputDirectory = "$LogOutputRoot\WEVT_$($Hostname)_$Date"
+New-FolderIfNotPresent $LogOutputDirectory
+# Define Windows event log types to export.
+$EventTypesToExport = @('Application', 'Security', 'System')
+foreach ($EventType in $EventTypesToExport) {
+    # Build the file path for the current log topic. 
+    $CurrentTimeUTC = Get-Date -Format FileDateTimeUniversal
+    $LogOutputFileName = "$Hostname-WinEventLog-$EventType-$CurrentTimeUTC"
+    $LogOutputFilePath = "$LogOutputDirectory\$LogOutputFileName.evtx"
+    Write-Output "Exporting $EventType logs to path: $LogOutputFilePath"
+    #Export events via wevtutil
+    & wevtutil epl $EventType $LogOutputFilePath
+}
+Write-Host "Creating Zip Archive" -ForegroundColor Green
+Compress-Archive -Path "$LogOutputDirectory\*" -DestinationPath "$LogOutputDirectory.zip"
+# Open output directory
+Invoke-Item $LogOutputRoot
+# Extra line for linebreak to execute last line
