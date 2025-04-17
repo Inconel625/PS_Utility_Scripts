@@ -32,6 +32,31 @@ function ConvertTo-MarkdownTable { # Accepts an input array and returns a markdo
 }
 ```
 
+### Enciches a CSV file with the day of the week associated with each entry in the specified column
+```powershell
+function Add-WeekdayColumn { 
+    param (
+        [string]$InputFilePath,
+        [string]$OutputFilePath,
+        [string]$DateColumnName
+    )
+    # Read in the CSV file
+    $CSV_Data = Import-Csv -Path $InputFilePath
+    # Add a new column for the week day
+    $CSV_Data | ForEach-Object {
+        $_ | Add-Member -MemberType NoteProperty -Name "DayOfTheWeek" -Value $false
+    }
+    # Update the "DayOfTheWeek" column based on the "Date" column
+    ForEach ($Row in $CSV_Data) {
+        $Row.DayOfTheWeek = ($Row.Entered -as [DateTime]).DayOfWeek
+        $Row | Export-Csv -Path $OutputFilePath -NoTypeInformation -Append
+    }
+}
+# Example:
+Add-WeekendColumn -inputFilePath "C:\Users\Admin\Downloads\input_file.csv" -outputFilePath "C:\Users\Admin\Downloads\output_file.csv" -DateColumnName 'Date'
+
+```
+
 ### IP Abuse Check
 ```powershell
 function Get-IPAbuseData{
