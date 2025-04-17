@@ -193,7 +193,7 @@ function Find-WordInArray {
 }
 ```
 
-### Function to get the number of objects in an 
+### Function to get the number of objects in an OU
 ```powershell
 function Get-OUObjectCount {
     param (
